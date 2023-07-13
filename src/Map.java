@@ -8,6 +8,11 @@ import java.util.ArrayList;
  */
 
 public class Map {
+    protected static final int empty = 0;
+    protected static final int wall = 1;
+    protected static final int start = 2;
+    protected static final int target = 3;
+
     private final int width;
     private final int height;
 
@@ -15,12 +20,8 @@ public class Map {
     private Coordinate startCoord;
     private Coordinate targetCoord;
 
-    private static final int empty = 0;
-    private static final int wall = 1;
-    private static final int start = 2;
-    private static final int target = 3;
 
-    Map(int w, int h, Coordinate[] walls, Coordinate startCoord, Coordinate targetCoord) {
+    Map(int w, int h, ArrayList<Coordinate> walls, Coordinate startCoord, Coordinate targetCoord) {
         width = w;
         height = h;
         map = new int[h][w];
@@ -42,8 +43,7 @@ public class Map {
 
     /**
      * Replace the current startCoord with an empty tile, before adding the new startCoord to the map.
-     * @param startCoord is the new start coord
-     * @precondition startCoord must be in bounds
+     * The Coordinate must be within the bounds of the Map.
      */
     public void setStartCoord(Coordinate startCoord) {
         map[startCoord.y()][startCoord.x()] = Map.empty;
@@ -53,8 +53,7 @@ public class Map {
 
     /**
      * Replace the current targetCoord with an empty tile, before adding the new targetCoord to the map.
-     * @param targetCoord is the new start coord
-     * @precondition targetCoord must be in bounds
+     * The Coordinate must be within the bounds of the Map.
      */
     public void setTargetCoord(Coordinate targetCoord) {
         map[targetCoord.y()][targetCoord.x()] = Map.empty;
@@ -63,9 +62,8 @@ public class Map {
     }
 
     /**
-     * Sets the map at the provided Coordinate to empty, if and only if it is currently a wall
-     * @param empty is the Coordinate to be set as empty
-     * @precondition empty is in bounds
+     * Sets the map at the provided Coordinate to empty, if and only if it is currently a wall.
+     * The Coordinate must be within the bounds of the Map.
      */
     public void setEmpty(Coordinate empty){
         if(map[empty.y()][empty.x()] == Map.wall)
@@ -74,28 +72,15 @@ public class Map {
 
     /**
      * Sets the map at the provided Coordinate to a wall, if and only if it is currently empty
-     * @param wall is the Coordinate to be set as a wall
-     * @precondition wall is in bounds
+     * The Coordinate must be within the bounds of the Map.
      */
     public void setWall(Coordinate wall){
         if(map[wall.y()][wall.x()] == Map.empty)
             map[wall.y()][wall.x()] = Map.wall;
     }
 
-    public boolean isWall(Coordinate coord){
-        return map[coord.y()][coord.x()] == Map.wall;
-    }
-
-    public boolean isEmpty(Coordinate coord){
-        return map[coord.y()][coord.x()] == Map.empty;
-    }
-
-    public boolean isStart(Coordinate coord){
-        return map[coord.y()][coord.x()] == Map.start;
-    }
-
-    public boolean isTarget(Coordinate coord){
-        return map[coord.y()][coord.x()] == Map.target;
+    public int[][] getMap(){
+        return map;
     }
 
     public Coordinate getStartCoord() {
@@ -115,15 +100,15 @@ public class Map {
     }
 
     public String toString(){
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for(int i=0; i<height; i++){
-            s += "[";
+            s.append("[");
             for(int j=0; j<width; j++){
-                s += map[i][j];
-                s += ", ";
+                s.append(map[i][j]);
+                s.append(", ");
             }
-            s = s.substring(0, s.length()-2) + "]\n";
+            s = new StringBuilder(s.substring(0, s.length() - 2) + "]\n");
         }
-        return s;
+        return s.toString();
     }
 }

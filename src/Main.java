@@ -1,10 +1,29 @@
+import java.util.ArrayList;
+
 public class Main {
-    private static Map map;
-    private static Coordinate start = new Coordinate(2, 2);
-    private static Coordinate target = new Coordinate(4, 0);
-    private static Coordinate[] walls = new Coordinate[]{new Coordinate(0, 1), new Coordinate(0, 2)};
-    public static void main(String[] args){
-        map = new Map(5, 5, walls, start, target);
-        System.out.println(map);
+    public static void main(String[] args) {
+        // Set initial values
+        int mapWidth = 5;
+        int mapHeight = 5;
+        Coordinate start = new Coordinate(2, 2);
+        Coordinate target = new Coordinate(4, 0);
+        ArrayList<Coordinate> walls = new ArrayList<>() {{
+            add(new Coordinate(1, 1));
+            add(new Coordinate(2, 1));
+        }};
+
+        // Create a map and interface
+        Map map = new Map(mapWidth, mapHeight, walls, start, target);
+        Interface gui = new Interface(map);
+
+        delay(1000);
+        map.setWall(new Coordinate(0, 1));
+        gui.update(map);
+    }
+
+
+    public static void delay(int milliseconds) {
+        try {Thread.sleep(milliseconds);}
+        catch (InterruptedException ignored) {}
     }
 }
