@@ -1,9 +1,20 @@
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.WindowConstants;
+import javax.swing.SwingConstants;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
+
 
 public class Interface {
     protected static final HashMap<String, Color> colors = new HashMap<>(){{
@@ -14,18 +25,23 @@ public class Interface {
         put("cursor", Color.cyan);
     }};
 
+    private final Map map;
+
     private final JFrame f;
-    private final JLabel[][] colorMap;
+    private final JButton[][] colorMap;
     private final JLabel editor;
+
+    private String cursorType = "cursor";
 
     /**
      * Creates an Interface object to render the map based on the given Map object's current values. The
      * map can have any dimensions. A JFrame application window will appear upon calling this constructor.
      */
     public Interface(Map map) {
+        this.map = map;
         // Set the window dimensions, and the resulting tile dimensions
-        int WINDOW_WIDTH = 1500;
-        int WINDOW_HEIGHT = 200;
+        int WINDOW_WIDTH = 1200;
+        int WINDOW_HEIGHT = 700;
         int tileWidth = (WINDOW_WIDTH * 3 / 4) / map.getWidth();
         int tileHeight = (WINDOW_HEIGHT - 40) / map.getHeight();
 
@@ -40,19 +56,24 @@ public class Interface {
         });
 
         // Initialize the colorMap and create white JLabels, while adding them to the JFrame
-        colorMap = new JLabel[map.getWidth()][map.getHeight()];
-        for (int i = 0; i < map.getWidth(); i++) {
-            for (int j = 0; j < map.getHeight(); j++) {
-                JLabel l = new JLabel();
-                l.setBounds(1 + i * tileWidth, 1 + j * tileHeight, tileWidth-1, tileHeight-1);
-                l.setBackground(Color.white);
-                l.setOpaque(true);
-                colorMap[i][j] = l;
-                f.add(l);
+        colorMap = new JButton[map.getHeight()][map.getWidth()];
+        for (int i = 0; i < map.getHeight(); i++) {
+            for (int j = 0; j < map.getWidth(); j++) {
+                JButton b = new JButton();
+                b.setBounds(1 + j * tileWidth, 1 + i * tileHeight, tileWidth-1, tileHeight-1);
+                b.setBackground(Color.white);
+                b.setOpaque(true);
+                b.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        colorMapClick(b);
+                    }
+                });
+                colorMap[i][j] = b;
+                f.add(b);
             }
         }
         // Set the JLabel colors based on actual map values
-        update(map);
+        updateColorMap();
 
         // Position editor label
          editor = new JLabel("Editor");
@@ -71,17 +92,41 @@ public class Interface {
         f.setVisible(true);
     }
 
+    /**
+     * Called when a JButton in the colorMap is clicked. Based on the current cursorType, this updates
+     * the underlying map, as well as the JButton's corresponding color.
+     */
+    private void colorMapClick(JButton b){
+        // In cursor mode, toggle empty tiles back and forth from cursor color. Ignore other tiles.
+        ArrayList<Color> ignore = new ArrayList<>(){{
+            add(colors.get("start"));
+            add(colors.get("target"));
+            add(colors.get("wall"));
+        }};
+        if (Objects.equals(cursorType, "cursor")) {
+            if (b.getBackground() == colors.get("empty"))
+                b.setBackground(colors.get("cursor"));
+            else if (!ignore.contains(b.getBackground())){
+                b.setBackground(colors.get("empty"));
+            }
+        }
+    }
+
+    /**
+     * Called automatically by the ComponentListener. Resizes the components if the JFrame is resized
+     * by a user.
+     */
     public void windowResize() {
         // Set the window dimensions, and the resulting tile dimensions
         int WINDOW_WIDTH = f.getWidth();
         int WINDOW_HEIGHT = f.getHeight();
-        int tileWidth = (WINDOW_WIDTH * 3 / 4) / colorMap.length;
-        int tileHeight = (WINDOW_HEIGHT - 40) / colorMap[0].length;
+        int tileWidth = (WINDOW_WIDTH * 3 / 4) / map.getWidth();
+        int tileHeight = (WINDOW_HEIGHT - 40) / map.getHeight();
 
         // Update the colorMap dimensions
-        for (int i = 0; i < colorMap.length; i++) {
-            for (int j = 0; j < colorMap[0].length; j++) {
-                colorMap[i][j].setBounds(1 + i * tileWidth, 1 + j * tileHeight, tileWidth - 1, tileHeight - 1);
+        for (int i = 0; i < map.getHeight(); i++) {
+            for (int j = 0; j < map.getWidth(); j++) {
+                colorMap[i][j].setBounds(1 + j * tileWidth, 1 + i * tileHeight, tileWidth - 1, tileHeight - 1);
             }
         }
 
@@ -94,10 +139,10 @@ public class Interface {
     /**
      * Uses the provided Map dimensions and values to update the color of each JLabel in the colorMap.
      */
-    public void update(Map map) {
+    public void updateColorMap() {
         int[][] mapValues = map.getMap();
-        for (int i = 0; i < map.getWidth(); i++) {
-            for (int j = 0; j < map.getHeight(); j++) {
+        for (int i = 0; i < map.getHeight(); i++) {
+            for (int j = 0; j < map.getWidth(); j++) {
                 for(String key : Map.legend.keySet()){
                     if (mapValues[i][j] == Map.legend.get(key))
                         colorMap[i][j].setBackground(Interface.colors.get(key));

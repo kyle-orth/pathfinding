@@ -3,8 +3,8 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) {
         // Set initial values
-        int mapWidth = 5;
-        int mapHeight = 5;
+        int mapWidth = 6;
+        int mapHeight = 7;
         Coordinate start = new Coordinate(2, 2);
         Coordinate target = new Coordinate(4, 0);
         ArrayList<Coordinate> walls = new ArrayList<>() {{
@@ -18,7 +18,7 @@ public class Main {
 
         delay(1000);
         map.setWall(new Coordinate(0, 1));
-        gui.update(map);
+        gui.updateColorMap();
     }
 
 
