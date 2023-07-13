@@ -60,14 +60,10 @@ public class Interface {
         int[][] mapValues = map.getMap();
         for (int i = 0; i < map.getWidth(); i++) {
             for (int j = 0; j < map.getHeight(); j++) {
-                if (mapValues[i][j] == Map.empty)
-                    colorMap[i][j].setBackground(Interface.colors.get("empty"));
-                else if (mapValues[i][j] == Map.wall)
-                    colorMap[i][j].setBackground(Interface.colors.get("wall"));
-                else if (mapValues[i][j] == Map.start)
-                    colorMap[i][j].setBackground(Interface.colors.get("start"));
-                else if (mapValues[i][j] == Map.target)
-                    colorMap[i][j].setBackground(Interface.colors.get("target"));
+                for(String key : Map.legend.keySet()){
+                    if (mapValues[i][j] == Map.legend.get(key))
+                        colorMap[i][j].setBackground(Interface.colors.get(key));
+                }
             }
         }
     }

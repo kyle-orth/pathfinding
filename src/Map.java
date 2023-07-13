@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * This class holds information about a two-dimensional map, with size width, height.
@@ -8,10 +9,12 @@ import java.util.ArrayList;
  */
 
 public class Map {
-    protected static final int empty = 0;
-    protected static final int wall = 1;
-    protected static final int start = 2;
-    protected static final int target = 3;
+    protected static final HashMap<String, Integer> legend = new HashMap<>(){{
+        put("empty", 0);
+        put("wall", 1);
+        put("start", 2);
+        put("target", 3);
+    }};
 
     private final int width;
     private final int height;
@@ -31,14 +34,14 @@ public class Map {
         //Initiate map values
         for(int i = 0; i < h; i++) {
             for(int j = 0; j < w; j++) {
-                map[i][j] = Map.empty;
+                map[i][j] = Map.legend.get("empty");
             }
         }
         for(Coordinate wall : walls) {
-            map[wall.x()][wall.y()] = Map.wall;
+            map[wall.x()][wall.y()] = Map.legend.get("wall");
         }
-        map[startCoord.x()][startCoord.y()] = Map.start;
-        map[targetCoord.x()][targetCoord.y()] = Map.target;
+        map[startCoord.x()][startCoord.y()] = Map.legend.get("start");
+        map[targetCoord.x()][targetCoord.y()] = Map.legend.get("target");
     }
 
     /**
@@ -46,9 +49,9 @@ public class Map {
      * The Coordinate must be within the bounds of the Map.
      */
     public void setStartCoord(Coordinate startCoord) {
-        map[startCoord.y()][startCoord.x()] = Map.empty;
+        map[startCoord.y()][startCoord.x()] = Map.legend.get("empty");
         this.startCoord = startCoord;
-        map[startCoord.y()][startCoord.x()] = Map.start;
+        map[startCoord.y()][startCoord.x()] = Map.legend.get("start");
     }
 
     /**
@@ -56,9 +59,9 @@ public class Map {
      * The Coordinate must be within the bounds of the Map.
      */
     public void setTargetCoord(Coordinate targetCoord) {
-        map[targetCoord.y()][targetCoord.x()] = Map.empty;
+        map[targetCoord.y()][targetCoord.x()] = Map.legend.get("empty");
         this.targetCoord = targetCoord;
-        map[targetCoord.y()][targetCoord.x()] = Map.target;
+        map[targetCoord.y()][targetCoord.x()] = Map.legend.get("target");
     }
 
     /**
@@ -66,8 +69,8 @@ public class Map {
      * The Coordinate must be within the bounds of the Map.
      */
     public void setEmpty(Coordinate empty){
-        if(map[empty.y()][empty.x()] == Map.wall)
-            map[empty.y()][empty.x()] = Map.empty;
+        if(map[empty.y()][empty.x()] == Map.legend.get("wall"))
+            map[empty.y()][empty.x()] = Map.legend.get("empty");
     }
 
     /**
@@ -75,8 +78,8 @@ public class Map {
      * The Coordinate must be within the bounds of the Map.
      */
     public void setWall(Coordinate wall){
-        if(map[wall.y()][wall.x()] == Map.empty)
-            map[wall.y()][wall.x()] = Map.wall;
+        if(map[wall.y()][wall.x()] == Map.legend.get("empty"))
+            map[wall.y()][wall.x()] = Map.legend.get("wall");
     }
 
     public int[][] getMap(){
