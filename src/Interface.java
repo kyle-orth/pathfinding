@@ -3,6 +3,8 @@ import java.util.Objects;
 
 public class Interface {
     protected static String cursorType = "highlight";
+    protected static String menuType = "editor";
+    protected static String[] menuOptions = {"editor", "algorithms", "load/save [Future]", "ai pathfinder [Future]"};
 
     /**
      * Called when a JButton in the colorMap is clicked. Based on the current cursorType, this updates
@@ -18,7 +20,7 @@ public class Interface {
                 tileType = key;
 
         // Cursor Mode: toggles tile from empty to highlight and back. Ignore other tiles.
-        if (cursorType.equals("highlight")) {
+        else if (cursorType.equals("highlight")) {
             if (tileType.equals("empty"))
                 map.setHighlight(tile);
 
