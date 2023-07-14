@@ -19,7 +19,7 @@ public class Map {
     private final int width;
     private final int height;
 
-    private int[][] map;
+    private final int[][] map;
     private Coordinate startCoord;
     private Coordinate targetCoord;
 
