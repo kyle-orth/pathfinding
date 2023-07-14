@@ -31,6 +31,8 @@ public class Interface {
     private final JButton[][] colorMap;
     private final JLabel editor;
 
+    private ArrayList<JButton> legend = new ArrayList<>();
+
     private String cursorType = "cursor";
 
     /**
@@ -63,11 +65,9 @@ public class Interface {
                 b.setBounds(1 + j * tileWidth, 1 + i * tileHeight, tileWidth-1, tileHeight-1);
                 b.setBackground(Color.white);
                 b.setOpaque(true);
-                b.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        colorMapClick(b);
-                    }
-                });
+                int x = j;
+                int y = i;
+                b.addActionListener(e -> colorMapClick(b, x, y));
                 colorMap[i][j] = b;
                 f.add(b);
             }
@@ -85,7 +85,17 @@ public class Interface {
          f.add(editor);
 
         // Initialize the legend
-
+        String[] legendElements = new String[]{"cursor", "wall", "start", "target"};
+        for (int i=0; i<legendElements.length; i++) {
+            String tileType = legendElements[i];
+            JButton b = new JButton(tileType);
+            b.addActionListener(e -> cursorType = tileType);
+            b.setFont(new Font("TimesNewRoman", Font.PLAIN, 18));
+            b.setBackground(colors.get(tileType));
+            b.setBounds(WINDOW_WIDTH * 13 / 16, WINDOW_HEIGHT / 15 + i * WINDOW_HEIGHT / 5 + WINDOW_HEIGHT / 12, WINDOW_WIDTH / 8, WINDOW_HEIGHT / 6);
+            f.add(b);
+            legend.add(b);
+        }
 
         // Render the JFrame window
         f.setLayout(null);
@@ -96,19 +106,38 @@ public class Interface {
      * Called when a JButton in the colorMap is clicked. Based on the current cursorType, this updates
      * the underlying map, as well as the JButton's corresponding color.
      */
-    private void colorMapClick(JButton b){
-        // In cursor mode, toggle empty tiles back and forth from cursor color. Ignore other tiles.
-        ArrayList<Color> ignore = new ArrayList<>(){{
-            add(colors.get("start"));
-            add(colors.get("target"));
-            add(colors.get("wall"));
-        }};
+    private void colorMapClick(JButton b, int x, int y){
+        // Cursor Mode: toggle empty tiles back and forth from cursor color. Ignore other tiles.
         if (Objects.equals(cursorType, "cursor")) {
             if (b.getBackground() == colors.get("empty"))
                 b.setBackground(colors.get("cursor"));
-            else if (!ignore.contains(b.getBackground())){
+            else if (!new ArrayList<Color>(){{add(colors.get("wall")); add(colors.get("start")); add(colors.get("target"));}}.contains(b.getBackground())){
                 b.setBackground(colors.get("empty"));
             }
+        }
+        // Wall Mode: Toggle walls and empty tiles with one another. Ignore start and target tiles.
+        else if (Objects.equals(cursorType, "wall") && !new ArrayList<Color>(){{add(colors.get("start")); add(colors.get("target"));}}.contains(b.getBackground())) {
+            if (b.getBackground() == colors.get("wall")) {
+                map.setEmpty(new Coordinate(x, y));
+                b.setBackground(colors.get("empty"));
+            }
+            else {
+                map.setWall(new Coordinate(x, y));
+                b.setBackground(colors.get("wall"));
+            }
+        }
+        // Start Mode: Move the start tile to the selected empty tile. Ignore other tiles.
+        else if (Objects.equals(cursorType, "start") && !new ArrayList<Color>(){{add(colors.get("wall")); add(colors.get("target"));}}.contains(b.getBackground())) {
+            colorMap[map.getStartCoord().y()][map.getStartCoord().x()].setBackground(colors.get("empty"));
+            map.setStartCoord(new Coordinate(x, y));
+            b.setBackground(colors.get("start"));
+        }
+
+        // Target Mode: Move the target tile to the selected empty tile. Ignore other tiles.
+        else if (Objects.equals(cursorType, "target") && !new ArrayList<Color>(){{add(colors.get("start")); add(colors.get("wall"));}}.contains(b.getBackground())) {
+            colorMap[map.getTargetCoord().y()][map.getTargetCoord().x()].setBackground(colors.get("empty"));
+            map.setTargetCoord(new Coordinate(x, y));
+            b.setBackground(colors.get("target"));
         }
     }
 
@@ -134,6 +163,10 @@ public class Interface {
         editor.setBounds(WINDOW_WIDTH * 3/4, 0, WINDOW_WIDTH / 4, WINDOW_HEIGHT / 15);
 
         // Update the legend dimensions
+        for (int i = 0; i < legend.size(); i++) {
+            JButton b = legend.get(i);
+            b.setBounds(WINDOW_WIDTH * 13 / 16, WINDOW_HEIGHT / 15 + i * WINDOW_HEIGHT / 5 + WINDOW_HEIGHT / 12, WINDOW_WIDTH / 8, WINDOW_HEIGHT / 6);
+        }
     }
 
     /**
@@ -144,7 +177,7 @@ public class Interface {
         for (int i = 0; i < map.getHeight(); i++) {
             for (int j = 0; j < map.getWidth(); j++) {
                 for(String key : Map.legend.keySet()){
-                    if (mapValues[i][j] == Map.legend.get(key))
+                    if (mapValues[i][j] != Map.legend.get("empty") && mapValues[i][j] == Map.legend.get(key))
                         colorMap[i][j].setBackground(Interface.colors.get(key));
                 }
             }

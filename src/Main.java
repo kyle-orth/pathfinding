@@ -10,15 +10,12 @@ public class Main {
         ArrayList<Coordinate> walls = new ArrayList<>() {{
             add(new Coordinate(1, 1));
             add(new Coordinate(2, 1));
+            add(new Coordinate(0, 1));
         }};
 
         // Create a map and interface
         Map map = new Map(mapWidth, mapHeight, walls, start, target);
         Interface gui = new Interface(map);
-
-        delay(1000);
-        map.setWall(new Coordinate(0, 1));
-        gui.updateColorMap();
     }
 
 

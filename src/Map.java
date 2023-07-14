@@ -38,10 +38,10 @@ public class Map {
             }
         }
         for(Coordinate wall : walls) {
-            map[wall.x()][wall.y()] = Map.legend.get("wall");
+            map[wall.y()][wall.x()] = Map.legend.get("wall");
         }
-        map[startCoord.x()][startCoord.y()] = Map.legend.get("start");
-        map[targetCoord.x()][targetCoord.y()] = Map.legend.get("target");
+        map[startCoord.y()][startCoord.x()] = Map.legend.get("start");
+        map[targetCoord.y()][targetCoord.x()] = Map.legend.get("target");
     }
 
     /**
@@ -49,7 +49,7 @@ public class Map {
      * The Coordinate must be within the bounds of the Map.
      */
     public void setStartCoord(Coordinate startCoord) {
-        map[startCoord.y()][startCoord.x()] = Map.legend.get("empty");
+        map[this.startCoord.y()][this.startCoord.x()] = Map.legend.get("empty");
         this.startCoord = startCoord;
         map[startCoord.y()][startCoord.x()] = Map.legend.get("start");
     }
@@ -59,7 +59,7 @@ public class Map {
      * The Coordinate must be within the bounds of the Map.
      */
     public void setTargetCoord(Coordinate targetCoord) {
-        map[targetCoord.y()][targetCoord.x()] = Map.legend.get("empty");
+        map[this.targetCoord.y()][this.targetCoord.x()] = Map.legend.get("empty");
         this.targetCoord = targetCoord;
         map[targetCoord.y()][targetCoord.x()] = Map.legend.get("target");
     }
