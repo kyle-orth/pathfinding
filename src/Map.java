@@ -3,17 +3,18 @@ import java.util.HashMap;
 
 /**
  * This class holds information about a two-dimensional map, with size width, height.
- * It holds the locations of empty coordinates, wall coordinates, the start coordinate, and the target coordinate.
+ * It holds the locations of the start, target,
  * There is exactly one start coordinate and one target coordinate at all times
  * Every other coordinate is either an empty space or a wall.
  */
 
 public class Map {
     protected static final HashMap<String, Integer> legend = new HashMap<>(){{
-        put("empty", 0);
-        put("wall", 1);
-        put("start", 2);
-        put("target", 3);
+        put("start", 0);
+        put("target", 1);
+        put("empty", 2);
+        put("highlighted", 3);
+        put("wall", 4);
     }};
 
     private final int width;
@@ -65,20 +66,29 @@ public class Map {
     }
 
     /**
-     * Sets the map at the provided Coordinate to empty, if and only if it is currently a wall.
+     * Sets the map at the provided Coordinate to empty, provided it is not the start or target.
      * The Coordinate must be within the bounds of the Map.
      */
     public void setEmpty(Coordinate empty){
-        if(map[empty.y()][empty.x()] == Map.legend.get("wall"))
+        if(!new ArrayList<Integer>(){{add(legend.get("start")); add(legend.get("target"));}}.contains(map[empty.y()][empty.x()]))
             map[empty.y()][empty.x()] = Map.legend.get("empty");
     }
 
     /**
-     * Sets the map at the provided Coordinate to a wall, if and only if it is currently empty
+     * Sets the map at the provided Coordinate to highlighted, if and only if it is currently empty.
+     * The Coordinate must be within the bounds of the Map.
+     */
+    public void setHighlighted(Coordinate highlighted){
+        if(map[highlighted.y()][highlighted.x()] == Map.legend.get("empty"))
+            map[highlighted.y()][highlighted.x()] = Map.legend.get("highlighted");
+    }
+
+    /**
+     * Sets the map at the provided Coordinate to a wall, provided it is not the start or target.
      * The Coordinate must be within the bounds of the Map.
      */
     public void setWall(Coordinate wall){
-        if(map[wall.y()][wall.x()] == Map.legend.get("empty"))
+        if(!new ArrayList<Integer>(){{add(legend.get("start")); add(legend.get("target"));}}.contains(map[wall.y()][wall.x()]))
             map[wall.y()][wall.x()] = Map.legend.get("wall");
     }
 

@@ -15,7 +15,7 @@ public class Main {
 
         // Create a map and interface
         Map map = new Map(mapWidth, mapHeight, walls, start, target);
-        Interface gui = new Interface(map);
+        Display display = new Display(map);
     }
 
 
