@@ -12,6 +12,8 @@ public class Interface {
      * JButton, then a Coordinate is returned for the Display to update.
      */
     public static Coordinate colorMapClick(Map map, Coordinate tile){
+        if(!menuType.equals("editor"))
+            return null;
         Coordinate additionalToUpdate = null;
         // Use the map and Coordinate to find the tileType at that tile
         String tileType = "";
@@ -20,7 +22,7 @@ public class Interface {
                 tileType = key;
 
         // Cursor Mode: toggles tile from empty to highlight and back. Ignore other tiles.
-        else if (cursorType.equals("highlight")) {
+        if (cursorType.equals("highlight")) {
             if (tileType.equals("empty"))
                 map.setHighlight(tile);
 

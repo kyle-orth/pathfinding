@@ -65,7 +65,6 @@ public class Display {
                 windowResize();
             }
         });
-        f.setSize(1200, 800);
 
         // Initialize the colorMap and create white JLabels, while adding them to the JFrame
         colorMap = new JButton[map.getHeight()][map.getWidth()];
@@ -147,6 +146,7 @@ public class Display {
         f.add(algorithms);
 
         // Render the JFrame window
+        f.setSize(1200, 800);
         f.setLayout(null);
         f.setVisible(true);
 
@@ -176,7 +176,6 @@ public class Display {
      * @param bool True for visible, false for hidden
      */
     public void showEditorMenu(boolean bool) {
-        Interface.cursorType = "highlight";
         for(JComponent j : editorMenu)
             j.setVisible(bool);
     }
