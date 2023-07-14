@@ -13,7 +13,7 @@ public class Display {
         put("target", Color.orange);
         put("wall", Color.gray);
         put("empty", Color.white);
-        put("highlighted", Color.cyan);
+        put("highlight", Color.cyan);
     }};
 
     // Underlying data source
@@ -86,7 +86,7 @@ public class Display {
 
         // Initialize the editorElements and add to the JFrame
         editorElements = new ArrayList<>();
-        String[] elements = new String[]{"cursor", "wall", "start", "target"};
+        String[] elements = new String[]{"highlight", "wall", "start", "target"};
         for (int i=0; i<elements.length; i++) {
             String tileType = elements[i];
             JButton b = new JButton(tileType);

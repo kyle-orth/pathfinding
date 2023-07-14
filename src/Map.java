@@ -13,7 +13,7 @@ public class Map {
         put("start", 0);
         put("target", 1);
         put("empty", 2);
-        put("highlighted", 3);
+        put("highlight", 3);
         put("wall", 4);
     }};
 
@@ -75,12 +75,12 @@ public class Map {
     }
 
     /**
-     * Sets the map at the provided Coordinate to highlighted, if and only if it is currently empty.
+     * Sets the map at the provided Coordinate to highlight, if and only if it is currently empty.
      * The Coordinate must be within the bounds of the Map.
      */
-    public void setHighlighted(Coordinate highlighted){
-        if(map[highlighted.y()][highlighted.x()] == Map.legend.get("empty"))
-            map[highlighted.y()][highlighted.x()] = Map.legend.get("highlighted");
+    public void setHighlight(Coordinate highlight){
+        if(map[highlight.y()][highlight.x()] == Map.legend.get("empty"))
+            map[highlight.y()][highlight.x()] = Map.legend.get("highlight");
     }
 
     /**
