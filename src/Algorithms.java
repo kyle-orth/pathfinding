@@ -7,7 +7,7 @@ public class Algorithms {
         put("searched", 1);
         put("frontier", 2);
     }};
-    private final static HashMap<String, int[]> dirCodes = new HashMap<>(){{
+    protected final static HashMap<String, int[]> dirCodes = new HashMap<>(){{
         put("N", new int[]{0, -1});
         put("NE", new int[]{1, -1});
         put("E", new int[]{1, 0});

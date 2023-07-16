@@ -9,6 +9,7 @@ public class Interface {
     protected static String[] algorithmSpeedOptions = {"10ms", "100ms", "500ms", "1000ms"};
 
     private static Timer timer;
+    private static Coordinate lastPathShown;
 
     /**
      * Called when a JButton in the colorMap is clicked. Based on the current cursorType, this updates
@@ -61,13 +62,20 @@ public class Interface {
     }
 
     public static void breadthFirstSearch(Map map, Display display) {
+        // Reset the colorMap and clear highlighted squares
         display.updateColorMap();
         display.clearHighlighted();
+
         Algorithms.setupBreadthFirstSearch(map);
+        lastPathShown = map.getTargetCoord();
+        // The timer acts as the loop, performing one time-step each loop, then delaying for the selected time
+        // as controlled by the user via the Display's algorithm timer.
         timer = new Timer(getAlgorithmTimer(display), e -> {
             if (Algorithms.done) {
-                timer.stop();
-                showFinalRoute(display);
+                // Increment the shown path until complete
+                lastPathShown = showFinalRoute(lastPathShown, display);
+                if(lastPathShown.equals(map.getStartCoord()))
+                    timer.stop();
             }
             else {
                 Algorithms.stepBreadthFirstSearch(map);
@@ -91,11 +99,12 @@ public class Interface {
         return Integer.parseInt(delayString);
     }
 
-
-    public static void showFinalRoute(Display display){
-        // Potentially use the same timer as earlier, or simply make a new timer.
-        // Make the path show up moving backwards until reaching start (Display.colors.get("path"))
-        // Lastly add the On Click (Have a toggleable variable that activates on click, and deactivates on timer action
+    public static Coordinate showFinalRoute(Coordinate lastShown, Display display){
+        String dirName = Algorithms.directions[lastShown.y()][lastShown.x()];
+        int[] direction = Algorithms.dirCodes.get(dirName);
+        Coordinate nextInPath = new Coordinate(lastShown.x() + direction[0], lastShown.y() + direction[1]);
+        display.showSearch(nextInPath, "path");
+        return nextInPath;
     }
 
     public static void delay(int millis) {

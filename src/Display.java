@@ -184,6 +184,7 @@ public class Display {
         algorithmMenu.add(breadth);
 
         // Speed Selection
+        algorithmSpeed.setSelectedIndex(1);
         algorithmSpeed.setFont(new Font("TimesNewRoman", Font.PLAIN, 14));
         algorithmMenu.add(algorithmSpeed);
         f.add(algorithmSpeed);
