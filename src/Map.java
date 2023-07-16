@@ -92,6 +92,21 @@ public class Map {
             map[wall.y()][wall.x()] = Map.legend.get("wall");
     }
 
+    /**
+     * Returns the boolean representing whether the given Coordinate is a wall tile.
+     * The Coordinate must be within the bounds of the Map.
+     */
+    public boolean isWall(Coordinate tile){
+        return map[tile.y()][tile.x()] == Map.legend.get("wall");
+    }
+
+    /**
+     * Returns the boolean representing whether the given Coordinate is within the Map's bounds.
+     */
+    public boolean isInBounds(Coordinate tile) {
+        return (tile.x() >= 0 && tile.y() >= 0 && tile.x() < width && tile.y() < height);
+    }
+
     public int[][] getMap(){
         return map;
     }
