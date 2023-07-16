@@ -18,5 +18,10 @@ To get started, simply download the src folder and run Main.java.
    
 ### - - - ForTheNerds - - -
 Throughout this ongoing project there's been several design choices I've found interesting, as well as several cool code segments worth mentioning. So here we are:
-1) 
-2) Use of HashMaps: Browsing the code, specifically Map, Display, and Algorithms, you'll note I use a lot of HashMaps. These dictionary-esque datatypes appealed for two main reasons. First, ease of comprehension. As an example, checking to see if a tile is a wall tile looks something like this: (CODE SEGMENT). Whearas without the Hashmpas allowing us to use these String keys, it would have to look like this: (UGLY CODE SEGMENT).
+1) In Display.changeMenu, I was able to save a lot of logic tree usage with this simple loop:
+~~~
+public void changeMenu(String menu){
+        for(Boolean bool : new boolean[]{false, true}) { ... }
+~~~
+The first loop hides the current menu, then the menu changes and the next loop displays the new menu. I found this interesting.
+3) Use of HashMaps: Browsing the code, specifically Map, Display, and Algorithms, you'll note I use a lot of HashMaps. These dictionary-esque datatypes appealed for two main reasons. First, ease of comprehension. As an example, checking to see if a tile is a wall tile looks something like this: (CODE SEGMENT). Whearas without the Hashmpas allowing us to use these String keys, it would have to look like this: (UGLY CODE SEGMENT).
