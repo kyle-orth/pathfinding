@@ -20,7 +20,7 @@ To get started, simply download the src folder and run Main.java.
 Throughout this ongoing project there's been several design choices I've found interesting, as well as several cool code segments worth mentioning. So here we are:
 1) Use of HashMaps: Browsing the code, specifically Map, Display, and Algorithms, you'll note I use a lot of HashMaps. These dictionary-esque datatypes appealed for two main reasons. First, ease of comprehension. As an example, checking to see if a tile is a wall tile looks something like this:
 ~~~
-boolean isWall = (map[row][col] == Map.legend.get("wall")); // Easily understandable, once you are familiar with HashMap accessors
+boolean isWall = (map[row][col] == Map.legend.get("wall")); // Easily readable if you recognize HashMap accessors
 ~~~
 Whearas without the Hashmaps allowing us to use these String keys, it would have to look like this:
 ~~~
