@@ -19,16 +19,6 @@ To get started, simply download the src folder and run Main.java.
 ### - - - ForTheNerds - - -
 Throughout this ongoing project there's been several design choices I've found interesting, as well as several cool code segments worth mentioning. So here we are:
 
-**Use of HashMaps:** Browsing the code, specifically Map, Display, and Algorithms, you'll note I use a lot of HashMaps. These dictionary-esque datatypes appealed for two main reasons. First, ease of comprehension. As an example, checking to see if a tile is a wall tile looks something like this:
-~~~
-boolean isWall = (map[row][col] == Map.legend.get("wall")); // Easily readable if you recognize HashMap accessors
-~~~
-Whearas without the Hashmaps allowing us to use these String keys, it would have to look like this:
-~~~
-boolean isWall = (map[row][col] == 2); // What does 2 represent? What if I switch 2 to mean the start tile instead?
-~~~
-As you can see, the HashMaps drastically improve quality of life. The second reason, which is more chance than design, is that it (potentially) saves memory. Particularly with large datasets, holding 2D arrays of ints is fairly easy, while holding the same size arrays of Strings would take much more memory. 
-
 **Use of Record** Coordinate is a class with no modifiers, called a Record. It simply holds information that never changes. I wasn't familiar with these before this
 
 **Interesting Loop Design** In Display.changeMenu, I was able to save a lot of logic tree usage with this simple loop:
@@ -45,3 +35,13 @@ As you can see, the HashMaps drastically improve quality of life. The second rea
     }
 ~~~
 This is slightly condensed from the source code, but it shows the idea. The first loop hides the current menu, then the menu changes and the next loop displays the new menu. I found this interesting.
+
+**Use of HashMaps:** Browsing the code, specifically Map, Display, and Algorithms, you'll note I use a lot of HashMaps. These dictionary-esque datatypes appealed for two main reasons. First, ease of comprehension. As an example, checking to see if a tile is a wall tile looks something like this:
+~~~
+boolean isWall = (map[row][col] == Map.legend.get("wall")); // Easily readable if you recognize HashMap accessors
+~~~
+Whearas without the Hashmaps allowing us to use these String keys, it would have to look like this:
+~~~
+boolean isWall = (map[row][col] == 2); // What does 2 represent? What if I switch 2 to mean the start tile instead?
+~~~
+As you can see, the HashMaps drastically improve quality of life. The second reason, which is more chance than design, is that it (potentially) saves memory. Particularly with large datasets, holding 2D arrays of ints is fairly easy, while holding the same size arrays of Strings would take much more memory. 
