@@ -7,7 +7,10 @@ public class Algorithms {
         put("searched", 1);
         put("frontier", 2);
     }};
-    private final static HashMap<String, int[]> dirCodes = new HashMap<>(){{
+    /**
+     * Can be used to interpret the Strings that makeup protected static String[][] directions
+     */
+    protected final static HashMap<String, int[]> dirCodes = new HashMap<>(){{
         put("N", new int[]{0, -1});
         put("NE", new int[]{1, -1});
         put("E", new int[]{1, 0});
@@ -27,25 +30,30 @@ public class Algorithms {
         put("W", "E");
         put("NW", "SE");
     }};
-    protected static boolean done;
     private static Coordinate target;
     private static int[][] values;
+
     protected static int[][] searchStatus;
     protected static String[][] directions;
-
+    protected static boolean done;
     protected static boolean routeExists;
 
 
     protected static Coordinate lastSearched;
     protected static ArrayList<Coordinate> newFrontier = new ArrayList<>();
 
+    /**
+     * Prepares for a breadth-first search by resetting static variables and setting initial values for
+     * the start and target tiles.
+     * @param map used for dimensions and location of start and target tiles.
+     */
     public static void setupBreadthFirstSearch(Map map) {
         done = false;
         searchStatus = new int[map.getHeight()][map.getWidth()];
         values = new int[map.getHeight()][map.getWidth()];
         directions = new String[map.getHeight()][map.getWidth()];
 
-        // Enter the start and target coordinates
+        // Enter the start coordinate
         Coordinate start = map.getStartCoord();
         searchStatus[start.y()][start.x()] = statusCodes.get("frontier");
         values[start.y()][start.x()] = 0;
@@ -55,7 +63,8 @@ public class Algorithms {
     }
 
     /**
-     * Progresses the breadth-first search by one step. Sets done to true when finished.
+     * Progresses the breadth-first search by one step; exploring one new tile and updating the frontier around that tile.
+     * Sets static variable done = true when finished.
      */
     public static void stepBreadthFirstSearch(Map map) {
         Coordinate toSearch = findLowestFrontier();
@@ -78,6 +87,9 @@ public class Algorithms {
         lastSearched = toSearch;
     }
 
+    /**
+     * @return true if empty, false otherwise
+     */
     private static boolean frontierEmpty(){
         for(int[] row : searchStatus)
             for(int status : row)
@@ -87,7 +99,7 @@ public class Algorithms {
     }
 
     /**
-     * Returns the Coordinate of the frontier tile with the lowest value.
+     * @return The first coordinate it finds with the lowest distance from start
      */
     private static Coordinate findLowestFrontier(){
         Coordinate lowest = null;

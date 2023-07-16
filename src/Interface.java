@@ -9,6 +9,7 @@ public class Interface {
     protected static String[] algorithmSpeedOptions = {"10ms", "100ms", "500ms", "1000ms"};
 
     private static Timer timer;
+    private static Coordinate lastPathShown;
 
     /**
      * Called when a JButton in the colorMap is clicked. Based on the current cursorType, this updates
@@ -60,14 +61,28 @@ public class Interface {
             display.updateColorMap(additionalToUpdate);
     }
 
+    /**
+     * Performs a breadth-first search on the given map, updating the given display. Implements step-by-step
+     * searching, while updating the display every frame and waiting for an amount of time designated by
+     * the Display's algorithmSpeed variable.
+     * @param map Map containing start, target, and wall structure to pathfind in
+     * @param display Display in which to show the process, which also controls the speed.
+     */
     public static void breadthFirstSearch(Map map, Display display) {
+        // Reset the colorMap and clear highlighted squares
         display.updateColorMap();
         display.clearHighlighted();
+
         Algorithms.setupBreadthFirstSearch(map);
+        lastPathShown = map.getTargetCoord();
+        // The timer acts as the loop, performing one time-step each loop, then delaying for the selected time
+        // as controlled by the user via the Display's algorithm timer.
         timer = new Timer(getAlgorithmTimer(display), e -> {
             if (Algorithms.done) {
-                timer.stop();
-                showFinalRoute(display);
+                // Increment the shown path until complete
+                lastPathShown = showFinalRoute(lastPathShown, display);
+                if(lastPathShown.equals(map.getStartCoord()))
+                    timer.stop();
             }
             else {
                 Algorithms.stepBreadthFirstSearch(map);
@@ -79,30 +94,37 @@ public class Interface {
         timer.start();
     }
 
+    /**
+     * Uses the stored data in Algorithms to efficiently update the display based on the past algorithm step
+     * @param display Display on which to show the search
+     */
     public static void showSearch(Display display) {
         display.showSearch(Algorithms.lastSearched, "searched");
         for(Coordinate frontier : Algorithms.newFrontier)
             display.showSearch(frontier, "frontier");
     }
 
+    /**
+     * @return the int representing milliseconds of the selected option on the Algorithm menu of the Display
+     */
     private static int getAlgorithmTimer(Display display){
         String delayString = "" + display.algorithmSpeed.getSelectedItem();
         delayString = delayString.substring(0, delayString.length() - 2);
         return Integer.parseInt(delayString);
     }
 
-
-    public static void showFinalRoute(Display display){
-        // Potentially use the same timer as earlier, or simply make a new timer.
-        // Make the path show up moving backwards until reaching start (Display.colors.get("path"))
-        // Lastly add the On Click (Have a toggleable variable that activates on click, and deactivates on timer action
-    }
-
-    public static void delay(int millis) {
-        try {
-            Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    /**
+     * Shows the next step of the path (backwards) in the route found by Algorithms. Once it reaches the
+     * start tile, it should not be called again.
+     * @param lastShown Coordinate holding the location of the last tile shown (the output of this function's previous call)
+     * @param display The Display on which to show the path
+     * @return The tile that was just displayed.
+     */
+    public static Coordinate showFinalRoute(Coordinate lastShown, Display display){
+        String dirName = Algorithms.directions[lastShown.y()][lastShown.x()];
+        int[] direction = Algorithms.dirCodes.get(dirName);
+        Coordinate nextInPath = new Coordinate(lastShown.x() + direction[0], lastShown.y() + direction[1]);
+        display.showSearch(nextInPath, "path");
+        return nextInPath;
     }
 }

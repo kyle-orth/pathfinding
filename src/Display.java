@@ -184,6 +184,7 @@ public class Display {
         algorithmMenu.add(breadth);
 
         // Speed Selection
+        algorithmSpeed.setSelectedIndex(1);
         algorithmSpeed.setFont(new Font("TimesNewRoman", Font.PLAIN, 14));
         algorithmMenu.add(algorithmSpeed);
         f.add(algorithmSpeed);
@@ -266,6 +267,10 @@ public class Display {
 
     }
 
+    /**
+     * Updates the entire colormap to match what is in the Map object. This removes any pathfinding colors, but
+     * will preserve highlighted squares.
+     */
     public void updateColorMap() {
         int[][] mapValues = map.getMap();
         for(int row=0; row<mapValues.length; row++)
@@ -274,6 +279,10 @@ public class Display {
             }
     }
 
+    /**
+     * Updates the color of the specific Coordinate passed
+     * @param toUpdate tile to update color of
+     */
     public void updateColorMap(Coordinate toUpdate) {
         int[][] mapValues = map.getMap();
         for(String key : Map.legend.keySet()) {
@@ -284,15 +293,20 @@ public class Display {
         }
     }
 
+    /**
+     * Changes the color of the tile to either searched or frontier, based on searchStatus. Only applies
+     * if the tile is an empty square. Coordinate must be in bounds.
+     * @param tile Coordinate to display color
+     * @param searchStatus string code, either "frontier" or "searched"
+     */
     public void showSearch(Coordinate tile, String searchStatus) {
-        if (map.getMap()[tile.y()][tile.x()] == Map.legend.get("target"))
-            colorMap[tile.y()][tile.x()].setBackground(colors.get("target"));
-        else if (map.getMap()[tile.y()][tile.x()] == Map.legend.get("start"))
-            colorMap[tile.y()][tile.x()].setBackground(colors.get("start"));
-        else
+        if (map.getMap()[tile.y()][tile.x()] == Map.legend.get("empty"))
             colorMap[tile.y()][tile.x()].setBackground(colors.get(searchStatus));
     }
 
+    /**
+     * Removes all highlighted tiles (makes them empty tiles instead)
+     */
     public void clearHighlighted() {
         int[][] mapValues = map.getMap();
         for(int row = 0; row<mapValues.length; row++)

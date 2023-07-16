@@ -2,10 +2,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * This class holds information about a two-dimensional map, with size width, height.
- * It holds the locations of the start, target,
- * There is exactly one start coordinate and one target coordinate at all times
- * Every other coordinate is either an empty space or a wall.
+ * This class holds and manipulates information about a two-dimensional array of tiles.
+ * All information is mutable, but the original width and height cannot be changed. Accessors make it straightforward
+ * to transfer information into a new Map object of different dimensions.
  */
 
 public class Map {
@@ -24,13 +23,26 @@ public class Map {
     private Coordinate startCoord;
     private Coordinate targetCoord;
 
-
+    /**
+     * Constructs a Map object from the provided information
+     * @param w width of the map
+     * @param h height of the map
+     * @param walls ArrayList of Coordinates representing wall locations
+     * @param startCoord Coordinate of the start location
+     * @param targetCoord Coordinate of the target location
+     */
     Map(int w, int h, ArrayList<Coordinate> walls, Coordinate startCoord, Coordinate targetCoord) {
         width = w;
         height = h;
         map = new int[h][w];
-        this.startCoord = startCoord;
-        this.targetCoord = targetCoord;
+        if(isInBounds(startCoord))
+            this.startCoord = startCoord;
+        else
+            this.startCoord = new Coordinate(0, 0);
+        if(isInBounds(targetCoord))
+            this.targetCoord = targetCoord;
+        else
+            this.targetCoord = new Coordinate(4, 4);
 
         //Initiate map values
         for(int i = 0; i < h; i++) {
@@ -38,11 +50,13 @@ public class Map {
                 map[i][j] = Map.legend.get("empty");
             }
         }
-        for(Coordinate wall : walls) {
-            map[wall.y()][wall.x()] = Map.legend.get("wall");
-        }
         map[startCoord.y()][startCoord.x()] = Map.legend.get("start");
         map[targetCoord.y()][targetCoord.x()] = Map.legend.get("target");
+
+        for(Coordinate wall : walls) {
+            if(isInBounds(wall))
+                setWall(wall);
+        }
     }
 
     /**
@@ -109,6 +123,21 @@ public class Map {
 
     public int[][] getMap(){
         return map;
+    }
+
+    /**
+     * Ease of Access method, designed to transfer existing data to a new map of different dimensions.
+     * @return An ArrayList of all walls in the current state of map.
+     */
+    public ArrayList<Coordinate> getWalls() {
+        ArrayList<Coordinate> walls = new ArrayList<>();
+        for(int row=0; row<height; row++){
+            for(int col=0; col<width; col++){
+                if (map[row][col] == legend.get("wall"))
+                    walls.add(new Coordinate(col, row));
+            }
+        }
+        return walls;
     }
 
     public Coordinate getStartCoord() {
