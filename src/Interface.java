@@ -1,9 +1,14 @@
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Interface {
     protected static String cursorType = "highlight";
     protected static String menuType = "editor";
     protected static String[] menuOptions = {"editor", "algorithms", "load/save [Future]", "ai pathfinder [Future]"};
-    protected static String[] algorithmSpeedOptions = {"10ms", "50ms", "100ms", "500ms", "On Click"};
+    protected static String[] algorithmSpeedOptions = {"10ms", "100ms", "500ms", "1000ms"};
+
+    private static Timer timer;
 
     /**
      * Called when a JButton in the colorMap is clicked. Based on the current cursorType, this updates
@@ -59,15 +64,19 @@ public class Interface {
         display.updateColorMap();
         display.clearHighlighted();
         Algorithms.setupBreadthFirstSearch(map);
-
-        while (!Algorithms.done) {
-            Algorithms.stepBreadthFirstSearch(map);
-            showSearch(display);
-            // String delayString = "" + display.algorithmSpeed.getSelectedItem();
-            // delayString = delayString.substring(0, delayString.length() - 2);
-            // int millis = Integer.parseInt(delayString);
-        }
-        showFinalRoute(display);
+        timer = new Timer(getAlgorithmTimer(display), e -> {
+            if (Algorithms.done) {
+                timer.stop();
+                showFinalRoute(display);
+            }
+            else {
+                Algorithms.stepBreadthFirstSearch(map);
+                showSearch(display);
+                timer.setDelay(getAlgorithmTimer(display));
+            }
+        });
+        timer.setInitialDelay(0);
+        timer.start();
     }
 
     public static void showSearch(Display display) {
@@ -76,9 +85,17 @@ public class Interface {
             display.showSearch(frontier, "frontier");
     }
 
+    private static int getAlgorithmTimer(Display display){
+        String delayString = "" + display.algorithmSpeed.getSelectedItem();
+        delayString = delayString.substring(0, delayString.length() - 2);
+        return Integer.parseInt(delayString);
+    }
+
 
     public static void showFinalRoute(Display display){
-
+        // Potentially use the same timer as earlier, or simply make a new timer.
+        // Make the path show up moving backwards until reaching start (Display.colors.get("path"))
+        // Lastly add the On Click (Have a toggleable variable that activates on click, and deactivates on timer action
     }
 
     public static void delay(int millis) {
